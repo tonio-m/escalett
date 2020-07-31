@@ -13,8 +13,7 @@ Link para o colab abaixo:
 aws emr create-cluster \
   --applications \
   Name=Spark \
-  Name=Zeppelin \
-  --ec2-attributes \
+  Name=Zeppelin \ --ec2-attributes \
   '{"KeyName":"xxxxx-ec2-key","InstanceProfile":"EMR_EC2_DefaultRole","SubnetId":"subnet-xxxxxxxx","EmrManagedSlaveSecurityGroup":"sg-xxxxxxxxxxxxxxxxx","EmrManagedMasterSecurityGroup":"sg-xxxxxxxxxxxxxxxxx"}' \
   --service-role EMR_DefaultRole \
   --enable-debugging \
@@ -29,13 +28,27 @@ aws emr create-cluster \
 ```
 [ou crie no console](https://console.aws.amazon.com/elasticmapreduce/home?region=us-east-1#quick-create:)
 
-
-## ===  WIP ===
-
 2 - Rode o job de spark
 ```sh
 ssh -i ~/xxxxx-ec2-key.pem hadoop@xxx.xxx.x.x
 git clone https://github.com/tonio-m/escalett
-cd escalett
-./run.sh
+mkdir data-engineer-test
+cd data-engineer-test
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00000.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00001.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00002.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00003.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00004.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00005.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00006.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00007.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00008.json.gz"
+wget "https://d3l36jjwr70u5l.cloudfront.net/data-engineer-test/part-00009.json.gz"
+cd ../escalett
+hadoop fs -put ~/data-engineer-test  hdfs:///user/hadoop/
+spark-submit spark-clickstreams.py
+hadoop fs -cp hdfs:///sessions/ ~/sessions
+cat sessions/unique/by_file.json
+cat sessions/unique/by_family.json
+cat sessions/median/by_family.json
 ```
